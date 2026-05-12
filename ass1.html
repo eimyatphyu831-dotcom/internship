@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment1</title>
+    <style>
+        .sampleForm{
+            display:flex;
+            
+        }
+        #vipStatus{
+            margin-left: 150px;
+        }
+       /* #vipOutput{
+           background-color: gold;
+           width:100px; 
+           height: 20px;
+           border-radius: 15px; 
+        }*/
+
+        
+        .box1{
+            margin-left:150px;
+           
+        }
+        .card{
+            width: 90%;
+            height:150px;
+            border: solid 1px;
+            border-radius: 15px;
+            padding-left: 30px;
+        }
+       .container{
+        margin: auto;
+        margin-top: 60px;
+        padding:20px;
+        width:50%;
+        background-color: white;
+        border-radius: 15px;
+        border:solid 1px;
+        box-shadow: 0 2px 5px;
+       }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <div class="sampleForm">
+    <div>
+      <h2>Update Variables</h2>
+      <label for="name">Name(String):</label>
+      <div>
+      <input type="text" name="" id="name" value="eimyat" oninput="resultValue()">
+    </div><br>
+    
+    <label for="age">Age(Number):</label>
+      <div>
+      <input type="number" name="" id="age" value="23" oninput="resultValue()">
+    </div><br>
+
+    <label for="vipStatus">VIP Status(Boolean):</label>
+      <div>
+      <input type="checkbox" name="" id="vipStatus" onchange="resultValue()">
+    </div><br>
+
+    <label for="cardColor">Card Color:</label>
+      <div>
+      <input type="color" name="" id="cardColor" onchange="resultValue()">
+    </div>
+
+    </div>
+
+    <div class="box1">
+      <h2>Live DOM Output</h2> 
+      <div class="card" id="colorValue"> 
+      <p id="vipOutput"></p> 
+      <h3 id="nameOutput"></h3>   
+       <p id="ageOutput"></p>
+       </div>
+    </div>
+    </div>
+</div>
+    <script>
+        function resultValue(){
+        let name=document.getElementById("name").value;
+        let age=document.getElementById("age").value;
+        let vipStatus=document.getElementById("vipStatus");
+        let cardColor=document.getElementById("cardColor").value;
+        let vipOutput=document.getElementById("vipOutput");
+        let nameOutput=document.getElementById("nameOutput");
+        let ageOutput=document.getElementById("ageOutput");
+        let colorValue=document.getElementById("colorValue");
+        nameOutput.innerHTML=name;
+        ageOutput.innerHTML="Age:"+age;
+
+        if(vipStatus.checked){
+        //vipOutput.innerHTML="VIP MEMBER";
+            vipOutput.innerHTML="<p style='background-color: gold;width:100px; height: 20px;border-radius: 15px;'>VIP MEMBER</p>";
+        }
+        else{
+            vipOutput.innerHTML=" ";
+        }
+        colorValue.style.backgroundColor=cardColor;
+        }
+    
+    </script>
+
+</body>
+</html>

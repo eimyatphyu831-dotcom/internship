@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    .container {
+      width: 450px;
+      height: 200px;
+      border: 1px solid black;
+      border-radius: 5px;
+      margin: auto;
+      margin-top: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      padding: 10px;
+      box-shadow: 0 1px 4px;
+    }
+
+    button {
+      width: 388px;
+      border: 1px solid black;
+      border-radius: 5px;
+      background-color: #1b4d9e;
+      padding: 5px;
+      color: white;
+    }
+
+    button:hover {
+      background-color: rgb(20, 85, 113);
+    }
+
+    p {
+      width: 388px;
+      border: 1px dotted black;
+      border-radius: 5px;
+      padding: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #answer {
+      color: green;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Mini Calculator</h2>
+    <span>
+      <input type="number" id="num1" name="num1" />
+      <select id="operator" name="operator">
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+      </select>
+      <input type="number" name="num2" id="num2" />
+    </span>
+    <button onclick="calculate()">Calculate Amount</button>
+    <p>Result:<span id="answer"></span></p>
+  </div>
+
+  <script>
+    function calculate() {
+      let num1 = parseFloat(document.getElementById("num1").value);
+      let num2 = parseFloat(document.getElementById("num2").value);
+      let operator = document.getElementById("operator").value;
+      let answer = document.getElementById("answer");
+      let result;
+      if (isNaN(num1) || isNaN(num2)) {
+        answer.innerHTML = "Enter missing value!";
+      }
+      else {
+        switch (operator) {
+          case "+":
+            result = num1 + num2;
+            break;
+          case "-":
+            result = num1 - num2;
+            break;
+          case "*":
+            result = num1 * num2;
+            break;
+
+          case "/":
+            if (num2 !== 0) {
+              result = num1 / num2;
+              break;
+            }
+            else {
+              result = "Not Divide!";
+            }
+
+          default: "Choose one operator.";
+        }
+        answer.innerHTML = result;
+      }
+
+    }
+
+  </script>
+</body>
+
+</html>
