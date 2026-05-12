@@ -91,7 +91,7 @@
             <button class="blue" onclick="addValue(3)">3</button>
             <button class="pink" onclick="addValue('+')">+</button>
 
-            <button class="blue" onclick="addParenthesis()">()</button>
+            <button class="blue" onclick="addValue('()')">()</button>
             <button class="blue" onclick="addValue(0)">0</button>
             <button class="blue" onclick="addValue('.')">.</button>
             <button class="equ" onclick="calculate()">=</button>
@@ -105,25 +105,6 @@
                 ans.value = data;
             } else {
                 ans.value += data;
-            }
-        }
-        function addParenthesis() {
-            const value = ans.value;
-            const openCount = (value.match(/\(/g) || []).length;
-            const closeCount = (value.match(/\)/g) || []).length;
-            const lastChar = value[value.length - 1];
-            const canClose = openCount > closeCount;
-            const isNumberOrClose = /[0-9)]$/.test(value);
-            const isOperator = /[+\-*/%]$/.test(value);
-
-            if (value === '0' || isOperator || lastChar === '(') {
-                ans.value = value === '0' ? '(' : value + '(';
-            } else if (canClose && isNumberOrClose) {
-                ans.value = value + ')';
-            } else if (isNumberOrClose) {
-                ans.value = value + '*(';
-            } else {
-                ans.value += '(';
             }
         }
         function allClear() {
