@@ -107,8 +107,8 @@
             <button class="blue" onclick="addValue(3)">3</button>
             <button class="pink" onclick="addOperator('+')">+</button>
 
-            <button class="blue" onclick="addValue('(')">(</button>
-            <button class="blue" onclick="addValue(')')">)</button>
+            <button class="blue" onclick="addParenthesis('(')">(</button>
+            <button class="blue" onclick="addParenthesis(')')">)</button>
             <button class="blue" onclick="addValue(0)">0</button>
             <button class="blue" onclick="addDot()">.</button>
             <button class="equ" onclick="calculate()">=</button>
@@ -116,24 +116,24 @@
     </div>
 
     <script>
-         let ans = document.getElementById("num");
+        let ans = document.getElementById("num");
 
         function addOperator(opera) {
             let start = ans.selectionStart;
             let end = ans.selectionEnd;
             let current = ans.value;
-            
+
             let before = current.substring(0, start);
             let after = current.substring(end);
             let lastChar = before.slice(-1);
 
             let operators = ['+', '-', '*', '/', '%'];
             if (operators.includes(lastChar)) {
-                
+
                 ans.value = before.slice(0, -1) + opera + after;
                 ans.setSelectionRange(start, start);
             } else {
-                
+
                 ans.value = before + opera + after;
                 ans.setSelectionRange(start + 1, start + 1);
             }
@@ -169,11 +169,11 @@
             let current = ans.value;
 
             if (start !== end) {
-                
+
                 ans.value = current.substring(0, start) + current.substring(end);
                 ans.setSelectionRange(start, start);
             } else if (start > 0) {
-                
+
                 ans.value = current.substring(0, start - 1) + current.substring(end);
                 ans.setSelectionRange(start - 1, start - 1);
             }
@@ -189,7 +189,7 @@
                     ans.value = "Can't divide by zero!";
                     return;
                 }
-                
+
                 let result = eval(exp);
                 if (Number.isInteger(result)) {
                     ans.value = result;
@@ -208,17 +208,26 @@
             let before = ans.value.substring(0, start);
             let after = ans.value.substring(end);
             let lastPart = before.split(/[\+\-\*\/\%]/).pop();
-            
+
             if (!lastPart.includes('.')) {
                 ans.value = before + '.' + after;
                 ans.setSelectionRange(start + 1, start + 1);
             }
             ans.focus();
         }
+
+        function addParenthesis(p) {
+            let current = ans.value;
+            if (!current.includes(p)) {
+                addValue(p);
+            }
+            ans.focus();
+        }
     </script>
 </body>
+
 </html>
-    </script>
+</script>
 </body>
 
 </html>
