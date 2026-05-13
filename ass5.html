@@ -89,7 +89,7 @@
         <div class="btn">
             <button class="del" onclick="allClear()">C</button>
             <button class="del" onclick="deleteLast()">⌫</button>
-            <button class="blue" onclick="addOperator('%')">%</button>
+            <button class="blue" onclick="convertToPercentage()">%</button>
             <button class="pink" onclick="addOperator('/')">÷</button>
 
             <button class="blue" onclick="addValue(7)">7</button>
@@ -220,6 +220,23 @@
             let current = ans.value;
             if (!current.includes(p)) {
                 addValue(p);
+            }
+            ans.focus();
+        }
+        function convertToPercentage() {
+            let start = ans.selectionStart;
+            let end = ans.selectionEnd;
+            let current = ans.value;
+            let before = current.substring(0, start);
+            let after = current.substring(end);
+            let match = before.match(/(\d+\.?\d*)$/);
+
+            if (match) {
+                let lastNumber = match[0];
+                let percentageValue = (parseFloat(lastNumber) / 100).toString(); 
+                ans.value = before.substring(0, before.length - lastNumber.length) + percentageValue + after;
+                let newPos = start - lastNumber.length + percentageValue.length;
+                ans.setSelectionRange(newPos, newPos);
             }
             ans.focus();
         }
