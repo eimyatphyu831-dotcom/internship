@@ -73,11 +73,8 @@
         }
 
         .equ {
-            background-color: pink;
+            background-color: rgb(187, 42, 61);
             color: white;
-            border-radius: 10px;
-            grid-column: span 4;
-            width: 100%;
         }
     </style>
 </head>
@@ -89,7 +86,7 @@
         <div class="btn">
             <button class="del" onclick="allClear()">C</button>
             <button class="del" onclick="deleteLast()">⌫</button>
-            <button class="blue" onclick="convertToPercentage()">%</button>
+            <button class="blue" onclick="addOperator('%')">%</button>
             <button class="pink" onclick="addOperator('/')">÷</button>
 
             <button class="blue" onclick="addValue(7)">7</button>
@@ -122,21 +119,21 @@
             let start = ans.selectionStart;
             let end = ans.selectionEnd;
             let current = ans.value;
-
             let before = current.substring(0, start);
             let after = current.substring(end);
             let lastChar = before.slice(-1);
-
+            let firstCharAfter = after.charAt(0);
             let operators = ['+', '-', '*', '/', '%'];
-            if (operators.includes(lastChar)) {
-
-                ans.value = before.slice(0, -1) + opera + after;
-                ans.setSelectionRange(start, start);
-            } else {
-
-                ans.value = before + opera + after;
-                ans.setSelectionRange(start + 1, start + 1);
+            if (operators.includes(lastChar) || operators.includes(firstCharAfter)) {
+                ans.focus();
+                return;
             }
+            if (before === '' && opera !== '-') {
+                ans.focus();
+                return;
+            }
+            ans.value = before + opera + after;
+            ans.setSelectionRange(start + 1, start + 1);
             ans.focus();
         }
 
@@ -144,6 +141,12 @@
             let start = ans.selectionStart;
             let end = ans.selectionEnd;
             let current = ans.value;
+            if (isNaN(current) && current !== "0" && current !== "" && !current.includes('+') && !current.includes('-') && !current.includes('*') && !current.includes('/') && !current.includes('%')) {
+                ans.value = data;
+                ans.setSelectionRange(1, 1);
+                ans.focus();
+                return;
+            }
 
             let before = current.substring(0, start);
             let after = current.substring(end);
@@ -185,12 +188,16 @@
         function calculate() {
             try {
                 let exp = ans.value;
+                exp = exp.replace(/×/g, '*').replace(/÷/g, '/');
+                exp = exp.replace(/(\d+\.?\d*)%/g, "($1/100)");
+
                 if (exp.includes("/0") && !exp.includes("/0.")) {
                     ans.value = "Can't divide by zero!";
                     return;
                 }
 
                 let result = eval(exp);
+
                 if (Number.isInteger(result)) {
                     ans.value = result;
                 } else {
@@ -201,7 +208,6 @@
             }
             ans.focus();
         }
-
         function addDot() {
             let start = ans.selectionStart;
             let end = ans.selectionEnd;
@@ -223,23 +229,8 @@
             }
             ans.focus();
         }
-        function convertToPercentage() {
-            let start = ans.selectionStart;
-            let end = ans.selectionEnd;
-            let current = ans.value;
-            let before = current.substring(0, start);
-            let after = current.substring(end);
-            let match = before.match(/(\d+\.?\d*)$/);
 
-            if (match) {
-                let lastNumber = match[0];
-                let percentageValue = (parseFloat(lastNumber) / 100).toString(); 
-                ans.value = before.substring(0, before.length - lastNumber.length) + percentageValue + after;
-                let newPos = start - lastNumber.length + percentageValue.length;
-                ans.setSelectionRange(newPos, newPos);
-            }
-            ans.focus();
-        }
+
     </script>
 </body>
 
