@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <div class="w-full h-screen flex flex-col">
+        <h1 class="text-xl font-bold px-2">Tailwind Utility Simulator</h1>
+        <p class="text-sm text-gray-400 px-2">Change the inputs below to see how atomic classes combine to build UIS.
+        </p>
+        <nav class="w-full bg-gray-800 text-white flex items-center text-center justify-between p-2 my-4 mx-2">
+            <h1 class="text-md text-xl">MyLogo</h1>
+            <div class="flex gap-4 pr-4">
+                <a href="" class="hover:text-blue-400">Home</a>
+                <a href="" class="hover:text-blue-400">About</a>
+                <a href="" class="hover:text-blue-400">Contact</a>
+            </div>
+        </nav>
+        <div class="w-full grid grid-cols-3 gap-2 mx-12">
+            <h4 class="w-3/4 bg-slate-400 rounded-lg p-4 text-center hover:scale-110">Feature1</h4>
+            <h4 class="w-3/4 bg-slate-400 rounded-lg p-4 text-center hover:scale-110">Feature2</h4>
+            <h4 class="w-3/4 bg-slate-400 rounded-lg p-4 text-center hover:scale-110">Feature3</h4>
+        </div>
+        <div class="w-full flex gap-4 mt-2 p-2">
+            <section class="bg-slate-200 border-2 rounded-lg flex flex-col p-4 gap-4 w-1/2 h-[480px] box-shadow-md">
+                <h3 class="font-bold">Utility Controls</h3>
+                <label for="padding" id="padding">Padding(Spacing)</label>
+                <select>
+                    <option value="">Medium(p-8)</option>
+                </select>
+                <label for="bgtheme" id="bgtheme">Background Theme(Colord)</label>
+                <select>
+                    <option value="">Primary Blue</option>
+                </select>
+                <label for="txtsize" id="txtsize">Text Size(Typography)</label>
+                <select>
+                    <option value="">Large(text-xl)</option>
+                </select>
+                <label for="corner" id="corner">Corner Radius(Borders)</label>
+                <select>
+                    <option value="">Square(rounded-none)</option>
+                </select>
+                <label for="shadow" id="shadow">Shadow(Depth)</label>
+                <select>
+                    <option value="">Medium(shadow-md)</option>
+                </select>
+            </section>
+            <div class="w-1/2 flex flex-col gap-4">
+                <section
+                    class="w-full h-[250px] bg-slate-400 border rounded-md flex justify-center items-center p-4 shadow-md">
+                    <div class="bg-blue-600 rounded-md w-[300px] p-4">
+                        <h3 class="text-white text-xl">Alex Walker</h3>
+                        <p class="text-white">Full-Stack Web Developer building awesome things with TailWind CSS.</p>
+                    </div>
+                </section>
+                <section class="rounded-md w-full h-[206px] bg-black mt-2 flex flex-col shadow-md">
+                    <button class="text-white text-md rounded bg-blue-400 hover:bg-blue-700 ml-auto" id="btn">HTML Output</button>
+                    <p class="text-md text-green-600 p-5" id="output"></p>
+                </section>
+            </div>
+        </div>
+        <section class="mx-10 mt-2">
+            <button class="hover:bg-purple-500 bg-blue-600 rounded p-2">Submit</button>
+            <button class="hover:bg-purple-900 hover:text-blue-500 bg-white border-2 rounded p-2 text-blue-500">Read
+                More</button>
+            <button class="hover:bg-purple-700 bg-blue-600 rounded p-2">Hover Me Slowly!</button>
+        </section>
+    </div>
+    <script>
+        let btn = document.getElementById("btn");
+        let output = document.getElementById("output");
+
+        btn.addEventListener("click", function () {
+            output.innerText= "<div class='bg-blue-600 rounded-md w-[300px] p-4'>\n<h3 class='text-white text-xl'>Alex Walker</h3>\n<p class='text-white'>Full-Stack Web Developer building awesome things with TailWind CSS.</p>\n</div>";
+        
+        if(output.style.display==="none"){
+            output.style.display="block";
+        }else{
+            output.style.display="none";
+        }
+    });
+
+    </script>
+</body>
+
+</html>

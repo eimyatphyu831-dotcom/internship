@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>ass5</title>
     <style>
         * {
             padding: 0;
@@ -223,13 +223,21 @@
         }
 
         function addParenthesis(p) {
+            let start = ans.selectionStart;
+            let end = ans.selectionEnd;
             let current = ans.value;
-            if (!current.includes(p)) {
-                addValue(p);
+            let before = current.substring(0, start);
+            let after = current.substring(end);
+
+            if (current === '0') {
+                ans.value = p;
+                ans.setSelectionRange(1, 1);
+            } else {
+                ans.value = before + p + after;
+                ans.setSelectionRange(start + 1, start + 1);
             }
             ans.focus();
         }
-
 
     </script>
 </body>
