@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Logo</title>
+    <title>Assignment6</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -13,19 +13,15 @@
         <h1 class="text-xl font-bold px-2">Tailwind Utility Simulator</h1>
         <p class="text-sm text-gray-400 px-2">Change the inputs below to see how atomic classes combine to build UIS.
         </p>
-        <nav class="w-full bg-gray-800 text-white flex flex-wrap items-center justify-between px-4 py-1 shadow-md mb-6">
+        <nav class="w-full bg-gray-800 text-white flex flex-wrap items-center justify-between p-2 shadow-md mb-6">
             <h1 class="text-xl font-bold">MyLogo</h1>
-            <button id="menu-btn" class="block md:hidden p-2 focus:outline-none hover:bg-gray-700 rounded">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-            <div id="menu-links" class="hidden w-full md:flex md:w-auto md:items-center gap-4 mt-4 md:mt-0 border-t border-gray-700 md:border-none pt-4 md:pt-0">
-                <a href="" class="block md:inline hover:text-blue-400 py-1">Home</a>
-                <a href="" class="block md:inline hover:text-blue-400 py-1">About</a>
-                <a href="" class="block md:inline hover:text-blue-400 py-1">Contact</a>
+            <div class="flex gap-4">
+                <a href="" class="hover:text-blue-400">Home</a>
+                <a href="" class="hover:text-blue-400">About</a>
+                <a href="" class="hover:text-blue-400">Contact</a>
             </div>
         </nav>
+        
         <div class="w-full grid grid-cols-3 gap-2 mx-12">
             <h4 class="w-3/4 bg-slate-400 rounded-lg p-4 text-center hover:scale-110">Feature1</h4>
             <h4 class="w-3/4 bg-slate-400 rounded-lg p-4 text-center hover:scale-110">Feature2</h4>
@@ -64,14 +60,14 @@
                     </div>
                 </section>
                 <section class="rounded-md w-full h-[206px] bg-black mt-2 flex flex-col shadow-md">
-                    <button class="text-white text-md rounded bg-blue-400 hover:bg-blue-700 ml-auto" id="btn">HTML Output</button>
+                    <button class="text-white text-md rounded bg-gray-400 hover:bg-blue-700 ml-auto" id="btn">HTML Output</button>
                     <p class="text-md text-green-600 p-5" id="output"></p>
                 </section>
             </div>
         </div>
         <div class="ml-12 flex flex-wrap gap-4">
             <button class="hover:bg-purple-500 bg-blue-600 rounded p-2">Submit</button>
-            <button class="hover:bg-purple-900 hover:text-blue-500 bg-white border-2 rounded p-2 text-blue-500">Read
+            <button class="hover:bg-pink-900 bg-white border-2 rounded p-2 text-blue-500">Read
                 More</button>
             <button class="hover:bg-purple-700 bg-blue-600 rounded p-2">Hover Me Slowly!</button>
         </div>
@@ -83,20 +79,13 @@
         btn.addEventListener("click", function () {
             output.innerText= "<div class='bg-blue-600 rounded-md w-[300px] p-4'>\n<h3 class='text-white text-xl'>Alex Walker</h3>\n<p class='text-white'>Full-Stack Web Developer building awesome things with TailWind CSS.</p>\n</div>";
         
-            if(output.style.display==="none"){
-                output.style.display="block";
-            }else{
-                output.style.display="none";
-            }
-        });
+        if(output.style.display==="none"){
+            output.style.display="block";
+        }else{
+            output.style.display="none";
+        }
+    });
 
-        let menuBtn = document.getElementById("menu-btn");
-        let menuLinks = document.getElementById("menu-links");
-
-        menuBtn.addEventListener("click", function () {
-            menuLinks.classList.toggle("hidden");
-            menuLinks.classList.toggle("flex");
-        });
     </script>
 </body>
 

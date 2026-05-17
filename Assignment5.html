@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Assignment5</title>
     <style>
         * {
             padding: 0;
@@ -20,33 +20,45 @@
             margin-top: 100px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             padding: 20px;
-            cursor: pointer;
+            background-color: rgb(255, 255, 255);
         }
 
         #num {
-            width: 90%;
-            height: 20%;
-            border: none;
+            width: 100%;
+            height: 40px;
+            border: 1px solid #eee;
             background-color: white;
             text-align: right;
             font-size: 20px;
             color: rgb(19, 67, 139);
+            padding: 5px;
+            border-radius: 5px;
+            caret-color: transparent;
+        }
 
+        #num:focus {
+            outline: none;
+            border: 1px solid pink;
         }
 
         .btn {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            margin-top: 70px;
+            margin-top: 20px;
             gap: 15px;
         }
 
         button {
-            width: 28px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             border: none;
             font-size: 15px;
+            background-color: rgb(234, 160, 172);
+        }
+
+        button:active {
+            opacity: 0.6;
         }
 
         .del {
@@ -62,15 +74,19 @@
         }
 
         .equ {
-            background-color: pink;
+            background-color: rgb(220, 119, 133);
             color: white;
+            width: 100%;
+            grid-column: span 4;
+            border-radius: 5px;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <input type="text" id="num" value="0"readonly>
+        <input type="text" id="num" value="0">
+
         <div class="btn">
             <button class="del" onclick="allClear()">C</button>
             <button class="del" onclick="deleteLast()">⌫</button>
@@ -92,8 +108,8 @@
             <button class="blue" onclick="addValue(3)">3</button>
             <button class="pink" onclick="addOperator('+')">+</button>
 
-            <button class="blue" onclick="addValue('(')">(</button>
-            <button class="blue" onclick="addValue(')')">)</button>
+            <button class="blue" onclick="addParenthesis('(')">(</button>
+            <button class="blue" onclick="addParenthesis(')')">)</button>
             <button class="blue" onclick="addValue(0)">0</button>
             <button class="blue" onclick="addDot()">.</button>
             <button class="equ" onclick="calculate()">=</button>
@@ -102,65 +118,182 @@
 
     <script>
         let ans = document.getElementById("num");
-        
-        function addOperator(opera) {
+function addOperator(opera) {
+            ans.style.caretColor = "transparent";
+            let start = ans.selectionStart;
+            let end = ans.selectionEnd;
             let current = ans.value;
-            let lastChar = current[current.length - 1];
+            if (current === "Error!" || current === "Can't divide by zero!") {
+                ans.value = opera;
+                ans.setSelectionRange(1, 1);
+                ans.focus();
+                return;
+            }
+            let before = current.substring(0, start);
+            let after = current.substring(end);
+            let lastChar = before.slice(-1);
+            let firstCharAfter = after.charAt(0);
             let operators = ['+', '-', '*', '/', '%'];
-            if (operators.includes(lastChar)) {
-                ans.value = current.slice(0, -1) + opera;
-            } else {
-                ans.value += opera;
+
+            if (operators.includes(lastChar) || operators.includes(firstCharAfter)) {
+                ans.focus();
+                return;
             }
+            if (before === '' && opera !== '-') {
+                ans.focus();
+                return;
+            }
+
+            ans.style.caretColor = "transparent";
+            ans.value = before + opera + after;
+            ans.setSelectionRange(start + 1, start + 1);
+            ans.focus();
         }
-        
+
         function addValue(data) {
-            if (ans.value === '0') {
+            let start = ans.selectionStart;
+            let end = ans.selectionEnd;
+            let current = ans.value;
+            if (current === "Error!" || current === "Can't divide by zero!") {
                 ans.value = data;
-            } else {
-                ans.value += data;
+                ans.setSelectionRange(1, 1);
+                ans.focus();
+                return;
             }
+            if (isNaN(current) &&
+                current !== "0" &&
+                current !== "" &&
+                !current.includes('+') &&
+                !current.includes('-') &&
+                !current.includes('*') &&
+                !current.includes('/') &&
+                !current.includes('%') &&
+                !current.includes('(') &&
+                !current.includes(')')) {
+
+                ans.value = data;
+                ans.setSelectionRange(1, 1);
+                ans.focus();
+                return;
+            }
+
+            let before = current.substring(0, start);
+            let after = current.substring(end);
+
+            if (current === '0') {
+                ans.value = data;
+                ans.setSelectionRange(1, 1);
+            } else {
+                ans.value = before + data + after;
+                ans.setSelectionRange(start + 1, start + 1);
+            }
+            ans.focus();
         }
-        
+
         function allClear() {
             ans.value = "0";
+            ans.focus();
         }
-        
+
         function deleteLast() {
-            ans.value = ans.value.slice(0, -1) || "0";
+            let start = ans.selectionStart;
+            let end = ans.selectionEnd;
+            let current = ans.value;
+
+            if (start !== end) {
+
+                ans.value = current.substring(0, start) + current.substring(end);
+                ans.setSelectionRange(start, start);
+            } else if (start > 0) {
+
+                ans.value = current.substring(0, start - 1) + current.substring(end);
+                ans.setSelectionRange(start - 1, start - 1);
+            }
+
+            if (ans.value === "") ans.value = "0";
+            ans.focus();
         }
-        
+
         function calculate() {
             try {
                 let exp = ans.value;
-                let index = exp.indexOf("/0");
-                if (index !== -1) {
-                    let nextChar = exp[index + 2];
-                    if (nextChar !== ".") {
-                        ans.value = "Can't divide by zero!";
-                        return;
-                    }
+                let openCount = (exp.match(/\(/g) || []).length;
+                let closeCount = (exp.match(/\)/g) || []).length;
+                if (openCount !== closeCount) {
+                    ans.focus();
+                    return;
                 }
-                let reult = eval(ans.value);
-                if (Number.isInteger(reult)) {
-                    ans.value = reult;
+                exp = exp.replace(/×/g, '*').replace(/÷/g, '/');
+                exp = exp.replace(/(\d+\.?\d*)%(\d?)/g, function (match, number, nextDigit) {
+                    if (nextDigit !== "") {
+                        return number + "%" + nextDigit;
+                    } else {
+                        return "(" + number + "/100)";
+                    }
+                });
+                exp = exp.replace(/\)\(/g, ')*(');
+                exp = exp.replace(/(\d)\(/g, '$1*(');
+                exp = exp.replace(/\)(\d)/g, ')*$1');
+                if (exp.includes("/0") && !exp.includes("/0.")) {
+                    ans.value = "Can't divide by zero!";
+                    return;
+                }
+                let result = eval(exp);
+                if (Number.isInteger(result)) {
+                    ans.value = result;
                 } else {
-                    ans.value = reult.toFixed(6);
+                    ans.value = parseFloat(result.toFixed(6));
                 }
             } catch (error) {
                 ans.value = "Error!";
             }
+            ans.focus();
         }
 
         function addDot() {
-            if (!ans.value.includes('.')) {
-                ans.value += '.';
+            let start = ans.selectionStart;
+            let end = ans.selectionEnd;
+            let before = ans.value.substring(0, start);
+            let after = ans.value.substring(end);
+            let lastPart = before.split(/[\+\-\*\/\%]/).pop();
+
+            if (!lastPart.includes('.')) {
+                ans.value = before + '.' + after;
+                ans.setSelectionRange(start + 1, start + 1);
             }
+            ans.focus();
         }
 
+        function addParenthesis(p) {
+            let start = ans.selectionStart;
+            let end = ans.selectionEnd;
+            let current = ans.value;
+            let before = current.substring(0, start);
+            let after = current.substring(end);
+            let openCount = (current.match(/\(/g) || []).length;
+            let closeCount = (current.match(/\)/g) || []).length;
+            if (p === ")" && openCount <= closeCount) {
+                ans.focus();
+                return;
+            }
+            if (current === '0') {
+                ans.value = p;
+                ans.setSelectionRange(1, 1);
+            } else {
+                ans.value = before + p + after;
+                ans.setSelectionRange(start + 1, start + 1);
+            }
 
+            ans.focus();
+        }
+
+        document.getElementById("num").addEventListener("click", function () {
+            this.style.caretColor = "auto";
+        });
+        document.getElementById("num").addEventListener("blur", function () {
+            this.style.caretColor = "transparent";
+        });
     </script>
-
 </body>
 
 </html>

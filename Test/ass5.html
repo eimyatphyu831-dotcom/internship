@@ -54,6 +54,7 @@
             border-radius: 50%;
             border: none;
             font-size: 15px;
+            background-color: palevioletred;
         }
 
         button:active {
@@ -69,12 +70,15 @@
         }
 
         .pink {
-            color: rgb(201, 111, 126);
+            color: rgb(240, 142, 158);
         }
 
         .equ {
             background-color: rgb(187, 42, 61);
             color: white;
+            width: 100%;
+            grid-column: span 4;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -120,11 +124,18 @@
             let start = ans.selectionStart;
             let end = ans.selectionEnd;
             let current = ans.value;
+            if (current === "Error!" || current === "Can't divide by zero!") {
+                ans.value = opera;
+                ans.setSelectionRange(1, 1);
+                ans.focus();
+                return;
+            }
             let before = current.substring(0, start);
             let after = current.substring(end);
             let lastChar = before.slice(-1);
             let firstCharAfter = after.charAt(0);
             let operators = ['+', '-', '*', '/', '%'];
+
             if (operators.includes(lastChar) || operators.includes(firstCharAfter)) {
                 ans.focus();
                 return;
@@ -133,6 +144,7 @@
                 ans.focus();
                 return;
             }
+
             ans.style.caretColor = "transparent";
             ans.value = before + opera + after;
             ans.setSelectionRange(start + 1, start + 1);
@@ -143,6 +155,12 @@
             let start = ans.selectionStart;
             let end = ans.selectionEnd;
             let current = ans.value;
+            if (current === "Error!" || current === "Can't divide by zero!") {
+                ans.value = data;
+                ans.setSelectionRange(1, 1);
+                ans.focus();
+                return;
+            }
             if (isNaN(current) &&
                 current !== "0" &&
                 current !== "" &&
@@ -173,8 +191,6 @@
             ans.focus();
         }
 
-
-
         function allClear() {
             ans.value = "0";
             ans.focus();
@@ -200,34 +216,40 @@
         }
 
         function calculate() {
-    try {
-        let exp = ans.value;
-        let openCount = (exp.match(/\(/g) || []).length;
-        let closeCount = (exp.match(/\)/g) || []).length;
-        if (openCount !== closeCount) {
+            try {
+                let exp = ans.value;
+                let openCount = (exp.match(/\(/g) || []).length;
+                let closeCount = (exp.match(/\)/g) || []).length;
+                if (openCount !== closeCount) {
+                    ans.focus();
+                    return;
+                }
+                exp = exp.replace(/×/g, '*').replace(/÷/g, '/');
+                exp = exp.replace(/(\d+\.?\d*)%(\d?)/g, function (match, number, nextDigit) {
+                    if (nextDigit !== "") {
+                        return number + "%" + nextDigit;
+                    } else {
+                        return "(" + number + "/100)";
+                    }
+                });
+                exp = exp.replace(/\)\(/g, ')*(');
+                exp = exp.replace(/(\d)\(/g, '$1*(');
+                exp = exp.replace(/\)(\d)/g, ')*$1');
+                if (exp.includes("/0") && !exp.includes("/0.")) {
+                    ans.value = "Can't divide by zero!";
+                    return;
+                }
+                let result = eval(exp);
+                if (Number.isInteger(result)) {
+                    ans.value = result;
+                } else {
+                    ans.value = parseFloat(result.toFixed(6));
+                }
+            } catch (error) {
+                ans.value = "Error!";
+            }
             ans.focus();
-            return; 
         }
-        exp = exp.replace(/×/g, '*').replace(/÷/g, '/');
-        exp = exp.replace(/(\d+\.?\d*)%/g, "($1/100)");
-        exp = exp.replace(/\)\(/g, ')*(');
-        exp = exp.replace(/(\d)\(/g, '$1*(');
-        exp = exp.replace(/\)(\d)/g, ')*$1');
-        if (exp.includes("/0") && !exp.includes("/0.")) {
-            ans.value = "Can't divide by zero!";
-            return;
-        }
-        let result = eval(exp);
-        if (Number.isInteger(result)) {
-            ans.value = result;
-        } else {
-            ans.value = parseFloat(result.toFixed(6));
-        }
-    } catch (error) {
-        ans.value = "Error!";
-    }
-    ans.focus();
-}
 
         function addDot() {
             let start = ans.selectionStart;
@@ -251,10 +273,8 @@
             let after = current.substring(end);
             let openCount = (current.match(/\(/g) || []).length;
             let closeCount = (current.match(/\)/g) || []).length;
-            if (p === "(" && openCount > closeCount) {
-                return;
-            }
-            if (p === ")" && openCount === closeCount) {
+            if (p === ")" && openCount <= closeCount) {
+                ans.focus();
                 return;
             }
             if (current === '0') {
