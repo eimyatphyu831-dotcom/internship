@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/fontawesome.min.css">
+    <title>Assignment V</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* height: 100vh; */
+            /* margin-top: 200px; */
+        }
+
+        .container {
+            width: 300px;
+            height: 430px;
+            border: 1px solid rgb(233, 235, 236);
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 5px;
+            margin: auto;
+            margin-top: 100px;
+            /* padding: 10px; */
+            /* margin: auto;
+            
+            padding-left: 10px; */
+        }
+
+        #box {
+            width: 100%;
+            height: 20px;
+            margin-bottom: 10px;
+            border: none;
+            text-align: right;
+            padding: 20px;
+            font-size: 20px;
+            color: rgba(29, 168, 202, 0.9);
+            border-radius: 10px;
+
+
+        }
+
+        #buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            border-radius: 50%;
+            border: none;
+            width: 40px;
+            height: 40px;
+            background-color: rgb(158, 203, 230);
+            font-size: 20px;
+            margin: 4px 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:active {
+            transform: scale(0.92);
+        }
+
+
+        .btn1 {
+            color: orange;
+        }
+
+        .btn2 {
+            color: rgba(29, 168, 202, 0.9);
+        }
+
+        .btn3 {
+            background-color: palevioletred;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+
+        <div class="container">
+            <input type="text" name="name" id="box" value="0" inputmode="none">
+            <div id="buttons">
+                <button onclick="allClear()" class="btn1">C</button>
+                <button onclick="deleteLast()" class="btn1">⌫</button>
+                <button onclick="calculate('%')" class="btn2">%</button>
+                <button onclick="calculate('/')" class="btn1">/</button>
+                <button onclick="calculate(7)" class="btn2">7</button>
+                <button onclick="calculate(8)" class="btn2">8</button>
+                <button onclick="calculate(9)" class="btn2">9</button>
+                <button onclick="calculate('*')" class="btn1">*</button>
+                <button onclick="calculate(4)" class="btn2">4</button>
+                <button onclick="calculate(5)" class="btn2">5</button>
+                <button onclick="calculate(6)" class="btn2">6</button>
+                <button onclick="calculate('-')" class="btn1">-</button>
+                <button onclick="calculate(1)" class="btn2">1</button>
+                <button onclick="calculate(2)" class="btn2">2</button>
+                <button onclick="calculate(3)" class="btn2">3</button>
+                <button onclick="calculate('+')" class="btn1">+</button>
+                <button onclick="calculate('(')" class="btn2">(</button>
+                <button onclick="calculate(')')" class="btn2">)</button>
+                <button onclick="calculate(0)" class="btn2">0</button>
+                <button onclick="addDot('.')" class="btn2">.</button>
+                <button onclick="equalValue('=')" class="btn3">=</button>
+            </div>
+
+        </div>
+        <script>
+    let answer = document.getElementById("box");
+
+    function calculate(value) {
+        // ၁။ Focus မပေးခင် လက်ရှိ တကယ်ရှိနေတဲ့ Cursor နေရာကို အရင်ဆုံး မှတ်သားထားမယ်
+        let start = answer.selectionStart;
+        let end = answer.selectionEnd;
+        let currentValue = answer.value;
+
+        let charBeforeCursor = start > 0 ? currentValue.charAt(start - 1) : "";
+        let operators = ['+', '-', '*', '/', '.'];
+        
+        // အစကတည်းက "0" ဖြစ်နေခဲ့ရင် အစားထိုးဖို့
+        if (currentValue === '0') {
+            if (value === '(') {
+                answer.value = '(';
+                answer.setSelectionRange(1, 1);
+                return;
+            }
+            if (!operators.includes(value) && value !== ')') {
+                answer.value = value;
+                answer.setSelectionRange(1, 1);
+                return;
+            }
+        }
+
+        // လက်သည်းကွင်းအစ '('
+        if (value === '(') {
+            if (charBeforeCursor === '(') {
+                return; 
+            }
+            insertAtCursor('(', start, end);
+            return;
+        }
+
+        // လက်သည်းကွင်းအပိတ် ')'
+        if (value === ')') {
+            let openCount = (currentValue.match(/\(/g) || []).length;
+            let closeCount = (currentValue.match(/\)/g) || []).length;
+            
+            if (openCount > closeCount && charBeforeCursor !== '(' && !operators.includes(charBeforeCursor)) {
+                insertAtCursor(')', start, end);
+            }
+            return;
+        }
+        
+        // Operator အပွားတွေ ဇာတ်တိုက်ရိုက်တာ တားဆီးမယ်
+        if (operators.includes(charBeforeCursor) && operators.includes(value)) {
+            return;
+        }
+
+        // အားလုံးကိုက်ညီရင် စာလုံးသွင်းမယ်
+        insertAtCursor(value, start, end);
+    }
+
+    // စာလုံးသွင်းပြီး cursor ကို ထိန်းပေးတဲ့ function
+    function insertAtCursor(text, start, end) {
+        let currentValue = answer.value;
+
+        // စာလုံးကို မှတ်ထားခဲ့တဲ့ cursor တည်နေရာမှာ ကွက်တိ ညှပ်ထည့်မယ်
+        answer.value = currentValue.slice(0, start) + text + currentValue.slice(end);
+        
+        // Cursor ကို စာလုံးအသစ်ရဲ့ အနောက်မှာ ကပ်ရပ် ပြန်ထားပေးမယ် (focus မလိုတော့ပါ)
+        let newCursorPos = start + text.length;
+        answer.setSelectionRange(newCursorPos, newCursorPos);
+    }
+
+    function equalValue(value) {
+        let open = (answer.value.match(/\(/g) || []).length;
+        let close = (answer.value.match(/\)/g) || []).length;
+
+        if (open !== close) {
+            return;
+        }
+
+        try {
+            if (answer.value.includes('/0') && !answer.value.includes('/0.')) {
+                answer.value = "Cannot divide by 0";
+                return;
+            }
+
+            let expression = answer.value;
+            if (expression.includes("%")) {
+                expression = expression.replace(/%/g, "/100");
+            }
+            
+            expression = expression.replace(/(\d)(\()/g, '$1*$2');
+            expression = expression.replace(/(\))(\()/g, '$1*$2');
+            expression = expression.replace(/(\))(\d)/g, '$1*$2');
+            let finalResult = eval(expression);
+
+            if (Number.isInteger(finalResult)) {
+                answer.value = finalResult;
+            } else {
+                answer.value = parseFloat(finalResult.toFixed(6));
+            }
+        } catch (error) {
+            answer.value = "Error!";
+        }
+    }
+
+    function allClear() {
+        answer.value = "0";
+    }
+
+    function deleteLast() {
+        let start = answer.selectionStart;
+        let end = answer.selectionEnd;
+        let currentValue = answer.value;
+
+        if (start === 0 && end === 0) {
+            return;
+        }
+
+        if (start === end) {
+            answer.value = currentValue.slice(0, start - 1) + currentValue.slice(start);
+            answer.setSelectionRange(start - 1, start - 1);
+        } else {
+            answer.value = currentValue.slice(0, start) + currentValue.slice(end);
+            answer.setSelectionRange(start, start);
+        }
+        if (start === end) {
+            answer.value = currentValue.slice(0, start - 1) + currentValue.slice(start);
+            answer.setSelectionRange(start - 1, start - 1);
+        } else {
+            answer.value = currentValue.slice(0, start) + currentValue.slice(end);
+            answer.setSelectionRange(start, start);
+        }
+
+        if (answer.value === "") {
+            answer.value = "0";
+        }
+    }
+
+    function addDot() {
+        answer.focus();
+        let start = answer.selectionStart;
+        let end = answer.selectionEnd;
+        let currentValue = answer.value;
+
+        let leftPart = currentValue.slice(0, start);
+        let lastNumBlock = leftPart.split(/[\+\-\*\/]/).pop();
+
+        if (!lastNumBlock.includes(".")) {
+            insertAtCursor(".", start, end);
+        }
+    }
+</script>
+</body>
+
+</html>
