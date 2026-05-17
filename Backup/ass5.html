@@ -20,7 +20,7 @@
             margin-top: 100px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             padding: 20px;
-            cursor: pointer;
+            background-color: rgb(255, 255, 255);
         }
 
         #num {
@@ -33,6 +33,7 @@
             color: rgb(19, 67, 139);
             padding: 5px;
             border-radius: 5px;
+            caret-color: transparent;
         }
 
         #num:focus {
@@ -53,7 +54,6 @@
             border-radius: 50%;
             border: none;
             font-size: 15px;
-            cursor: pointer;
         }
 
         button:active {
@@ -116,6 +116,7 @@
         let ans = document.getElementById("num");
 
         function addOperator(opera) {
+            ans.style.caretColor = "transparent";
             let start = ans.selectionStart;
             let end = ans.selectionEnd;
             let current = ans.value;
@@ -132,6 +133,7 @@
                 ans.focus();
                 return;
             }
+            ans.style.caretColor = "transparent";
             ans.value = before + opera + after;
             ans.setSelectionRange(start + 1, start + 1);
             ans.focus();
@@ -141,7 +143,17 @@
             let start = ans.selectionStart;
             let end = ans.selectionEnd;
             let current = ans.value;
-            if (isNaN(current) && current !== "0" && current !== "" && !current.includes('+') && !current.includes('-') && !current.includes('*') && !current.includes('/') && !current.includes('%')) {
+            if (isNaN(current) &&
+                current !== "0" &&
+                current !== "" &&
+                !current.includes('+') &&
+                !current.includes('-') &&
+                !current.includes('*') &&
+                !current.includes('/') &&
+                !current.includes('%') &&
+                !current.includes('(') &&
+                !current.includes(')')) {
+
                 ans.value = data;
                 ans.setSelectionRange(1, 1);
                 ans.focus();
@@ -160,6 +172,8 @@
             }
             ans.focus();
         }
+
+
 
         function allClear() {
             ans.value = "0";
@@ -186,28 +200,35 @@
         }
 
         function calculate() {
-            try {
-                let exp = ans.value;
-                exp = exp.replace(/×/g, '*').replace(/÷/g, '/');
-                exp = exp.replace(/(\d+\.?\d*)%/g, "($1/100)");
-
-                if (exp.includes("/0") && !exp.includes("/0.")) {
-                    ans.value = "Can't divide by zero!";
-                    return;
-                }
-
-                let result = eval(exp);
-
-                if (Number.isInteger(result)) {
-                    ans.value = result;
-                } else {
-                    ans.value = parseFloat(result.toFixed(6));
-                }
-            } catch (error) {
-                ans.value = "Error!";
-            }
+    try {
+        let exp = ans.value;
+        let openCount = (exp.match(/\(/g) || []).length;
+        let closeCount = (exp.match(/\)/g) || []).length;
+        if (openCount !== closeCount) {
             ans.focus();
+            return; 
         }
+        exp = exp.replace(/×/g, '*').replace(/÷/g, '/');
+        exp = exp.replace(/(\d+\.?\d*)%/g, "($1/100)");
+        exp = exp.replace(/\)\(/g, ')*(');
+        exp = exp.replace(/(\d)\(/g, '$1*(');
+        exp = exp.replace(/\)(\d)/g, ')*$1');
+        if (exp.includes("/0") && !exp.includes("/0.")) {
+            ans.value = "Can't divide by zero!";
+            return;
+        }
+        let result = eval(exp);
+        if (Number.isInteger(result)) {
+            ans.value = result;
+        } else {
+            ans.value = parseFloat(result.toFixed(6));
+        }
+    } catch (error) {
+        ans.value = "Error!";
+    }
+    ans.focus();
+}
+
         function addDot() {
             let start = ans.selectionStart;
             let end = ans.selectionEnd;
@@ -228,7 +249,14 @@
             let current = ans.value;
             let before = current.substring(0, start);
             let after = current.substring(end);
-
+            let openCount = (current.match(/\(/g) || []).length;
+            let closeCount = (current.match(/\)/g) || []).length;
+            if (p === "(" && openCount > closeCount) {
+                return;
+            }
+            if (p === ")" && openCount === closeCount) {
+                return;
+            }
             if (current === '0') {
                 ans.value = p;
                 ans.setSelectionRange(1, 1);
@@ -236,14 +264,17 @@
                 ans.value = before + p + after;
                 ans.setSelectionRange(start + 1, start + 1);
             }
+
             ans.focus();
         }
 
+        document.getElementById("num").addEventListener("click", function () {
+            this.style.caretColor = "auto";
+        });
+        document.getElementById("num").addEventListener("blur", function () {
+            this.style.caretColor = "transparent";
+        });
     </script>
-</body>
-
-</html>
-</script>
 </body>
 
 </html>
